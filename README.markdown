@@ -15,7 +15,7 @@ Then symlink the following module paths to the matching magento path:
     e.g. module path => magento path
     
     Mage_Test/Mage => app/code/local/Mage
-    lib/PHPUnit => lib/PHPUnit
+    lib/Ibuildings => lib/Ibuildings
     
 Using symlinks means that you can keep your project code separate to this module yet still pull updates to this module from git. This module is still in development and not all assertions have yet been tested.
 
