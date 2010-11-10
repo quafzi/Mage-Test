@@ -124,7 +124,7 @@ abstract class Ibuildings_Mage_Test_PHPUnit_ControllerTestCase
         $this->mageRunType = isset($_SERVER['MAGE_RUN_TYPE']) ? $_SERVER['MAGE_RUN_TYPE'] : 'store';
         
         Mage::app($this->mageRunCode, $this->mageRunType, $this->options);
-        Mage::app()->setRequest(new Zend_Controller_Request_HttpTestCase);
+        Mage::app()->setRequest(new Ibuildings_Mage_Controller_Request_HttpTestCase);
         Mage::app()->setResponse(new Zend_Controller_Response_HttpTestCase);
     }
 
@@ -142,24 +142,24 @@ abstract class Ibuildings_Mage_Test_PHPUnit_ControllerTestCase
     public function dispatch($url = null)
     {
         // redirector should not exit
-        // $redirector = Zend_Controller_Action_HelperBroker::getStaticHelper('redirector');
-        // $redirector->setExit(false);
+        $redirector = Zend_Controller_Action_HelperBroker::getStaticHelper('redirector');
+        $redirector->setExit(false);
 
-        // $request    = $this->getRequest();
-        // if (null !== $url) {
-        //     $request->setRequestUri($url);
-        // }
-        // $request->setPathInfo(null);
-        // 
-        // $controller = $this->getFrontController();
+        $request    = $this->getRequest();
+        if (null !== $url) {
+            $request->setRequestUri($url);
+        }
+        $request->setPathInfo(null);
         
-        var_dump($this->getResponse());exit;
+        $controller = $this->getFrontController();
         
-        // Mage::app()->run(array(
-        //     'scope_code' => $this->mageRunCode,
-        //     'scope_type' => $this->mageRunType,
-        //     'options'    => $this->options,
-        // ));
+        // var_dump($this->getResponse());exit;
+        
+        Mage::app()->run(array(
+            'scope_code' => $this->mageRunCode,
+            'scope_type' => $this->mageRunType,
+            'options'    => $this->options,
+        ));
     }
 
     /**
