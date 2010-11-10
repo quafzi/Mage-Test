@@ -36,7 +36,7 @@ abstract class Ibuildings_Mage_Test_PHPUnit_ControllerTestCase
     protected $mageRunType;
     
     /**
-     * Internal member variable that will hold the additional options passed to Mage::app()->run()
+     * Internal member variable that will hold the additional options passed to Mage::app()
      *
      * @var array
      **/
@@ -105,7 +105,11 @@ abstract class Ibuildings_Mage_Test_PHPUnit_ControllerTestCase
     }
 
     /**
-     * undocumented function
+     * Boostrap the Mage application in a similar way to the procedure
+     * of index.php
+     * 
+     * Then sets test case request and response objects in Mage_Core_App,
+     * and disables returning the response.
      *
      * @return void
      * @author Alistair Stead
@@ -116,13 +120,13 @@ abstract class Ibuildings_Mage_Test_PHPUnit_ControllerTestCase
         if (isset($_SERVER['MAGE_IS_DEVELOPER_MODE'])) {
             Mage::setIsDeveloperMode(true);
         }
-        
         /* Store or website code */
         $this->mageRunCode = isset($_SERVER['MAGE_RUN_CODE']) ? $_SERVER['MAGE_RUN_CODE'] : '';
 
         /* Run store or run website */
         $this->mageRunType = isset($_SERVER['MAGE_RUN_TYPE']) ? $_SERVER['MAGE_RUN_TYPE'] : 'store';
         
+        // Initialize the Mage App
         Mage::app($this->mageRunCode, $this->mageRunType, $this->options);
         Mage::app()->setRequest(new Ibuildings_Mage_Controller_Request_HttpTestCase);
         Mage::app()->setResponse(new Zend_Controller_Response_HttpTestCase);
@@ -132,28 +136,18 @@ abstract class Ibuildings_Mage_Test_PHPUnit_ControllerTestCase
      * Dispatch the Mage request
      *
      * If a URL is provided, sets it as the request URI in the request object.
-     * Then sets test case request and response objects in front controller,
-     * disables throwing exceptions, and disables returning the response.
-     * Finally, dispatches the front controller.
+     * Dispatches the application request.
      *
      * @param  string|null $url
      * @return void
      */
     public function dispatch($url = null)
     {
-        // redirector should not exit
-        $redirector = Zend_Controller_Action_HelperBroker::getStaticHelper('redirector');
-        $redirector->setExit(false);
-
-        $request    = $this->getRequest();
+        $request = $this->getRequest();
         if (null !== $url) {
             $request->setRequestUri($url);
         }
         $request->setPathInfo(null);
-        
-        $controller = $this->getFrontController();
-        
-        // var_dump($this->getResponse());exit;
         
         Mage::app()->run(array(
             'scope_code' => $this->mageRunCode,
@@ -219,5 +213,46 @@ abstract class Ibuildings_Mage_Test_PHPUnit_ControllerTestCase
             $this->_response = Mage::app()->getResponse();
         }
         return $this->_response;
+    }
+    
+    /**
+     * Assert that the specified route was used
+     *
+     * @param  string $route
+     * @param  string $message
+     * @return void
+     */
+    public function assertRoute($route, $message = '')
+    {
+        $this->_incrementAssertionCount();
+        if ($route != $this->getRequest()->getRequestedRouteName()) {
+            $msg = sprintf('Failed asserting matched route was "%s", actual route is %s',
+                $route,
+                $this->getRequest()->getRequestedRouteName()
+            );
+            if (!empty($message)) {
+                $msg = $message . "\n" . $msg;
+            }
+            $this->fail($msg);
+        }
+    }
+    
+    /**
+     * Assert that the route matched is NOT as specified
+     *
+     * @param  string $route
+     * @param  string $message
+     * @return void
+     */
+    public function assertNotRoute($route, $message = '')
+    {
+        $this->_incrementAssertionCount();
+        if ($route == $this->getRequest()->getRequestedRouteName()) {
+            $msg = sprintf('Failed asserting route matched was NOT "%s"', $route);
+            if (!empty($message)) {
+                $msg = $message . "\n" . $msg;
+            }
+            $this->fail($msg);
+        }
     }
 }
