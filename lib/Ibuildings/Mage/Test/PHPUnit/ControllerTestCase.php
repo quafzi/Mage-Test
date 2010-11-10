@@ -17,7 +17,8 @@
  *
  * @uses       Zend_Test_PHPUnit_ControllerTestCase
  */
-abstract class PHPUnit_Magento_ControllerTestCase extends Zend_Test_PHPUnit_ControllerTestCase
+abstract class Ibuildings_Mage_Test_PHPUnit_ControllerTestCase
+   extends Zend_Test_PHPUnit_ControllerTestCase
 {
     
     /**
