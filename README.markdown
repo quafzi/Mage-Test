@@ -17,6 +17,10 @@ Then symlink the following module paths to the matching magento path:
     Mage_Test/Mage => app/code/local/Mage
     lib/Ibuildings => lib/Ibuildings
     
+If you want to take advantage of the core tests created as part of this module within your project. You should also symlink the core tests from within the module:
+
+    tests/app/code/core => tests/app/code/core
+    
 Using symlinks means that you can keep your project code separate to this module yet still pull updates to this module from git. This module is still in development and not all assertions have yet been tested.
 
 Instead of using manually created symlinks you may wish to consider using [Modman (Module-Manager)](http://code.google.com/p/module-manager/) to manage your module installation / management within your Magento project. This can be used in standalone without any SCM integration.
