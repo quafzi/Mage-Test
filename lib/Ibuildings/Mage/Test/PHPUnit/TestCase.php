@@ -2,8 +2,7 @@
 /**
  * Magento PHPUnit TestCase
  *
- * @category   PHPUnit
- * @package    PHPUnit_Framework_Magento
+ * @package    Ibuildings_Mage_Test_PHPUnit
  * @copyright  Copyright (c) 2010 Ibuildings
  * @author  Alistair Stead
  * @version    $Id$
