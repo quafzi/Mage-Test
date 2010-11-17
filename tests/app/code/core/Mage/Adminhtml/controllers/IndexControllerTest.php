@@ -6,6 +6,8 @@
  * @copyright  Copyright (c) 2010 Ibuildings
  * @version    $Id$
  */
+ 
+require_once 'ControllerTestCase.php';
 
 /**
  * Mage_Adminhtml_IndexControllerTest
@@ -14,9 +16,9 @@
  * @subpackage Mage_Adminhtml_Test
  *
  *
- * @uses PHPUnit_Framework_Magento_TestCase
+ * @uses Ibuildings_Mage_Test_PHPUnit_ControllerTestCase
  */
-class Mage_Adminhtml_IndexControllerTest extends Ibuildings_Mage_Test_PHPUnit_ControllerTestCase {
+class Mage_Adminhtml_IndexControllerTest extends Mage_Adminhtml_ControllerTestCase {
 
     /**
      * theAdminRouteAccessesTheAdminApplicationArea
@@ -33,36 +35,101 @@ class Mage_Adminhtml_IndexControllerTest extends Ibuildings_Mage_Test_PHPUnit_Co
     } // theAdminRouteAccessesTheAdminApplicationArea
     
     /**
-     * theAdminhtmlIndexControllerLoginActionDisplaysLoginForm
+     * theIndexActionDisplaysLoginForm
      * @author Alistair Stead
+     * @group login
      * @test
      */
-    public function theAdminhtmlIndexControllerIndexActionDisplaysLoginForm()
+    public function theIndexActionDisplaysLoginForm()
     {
-        $this->dispatch('admin/');
+        $this->dispatch('admin/index/');
         
         $this->assertQueryCount('form#loginForm', 1);
-    } // theAdminhtmlIndexControllerLoginActionDisplaysLoginForm
+    } // theIndexActionDisplaysLoginForm
     
     /**
-     * submittingTheAdminLoginFormWithInvalidCredsShouldDisplayError
+     * submittingInvalidCredsShouldDisplayError
      * @author Alistair Stead
+     * @group login
      * @test
      */
-    public function submittingTheAdminLoginFormWithInvalidCredsShouldDisplayError()
+    public function submittingInvalidCredsShouldDisplayError()
     {
-        $this->request->setMethod('POST')
-                              ->setPost(array(
-                                  'username' => 'admin',
-                                  'password' => 'invalid',
-                              ));
-                              
-        $this->dispatch('admin/');
-        
-        var_dump($this->response);
+        $this->login('invalid', 'invalid');
         
         $this->assertQueryCount('li.error-msg', 1);
-    } // submittingTheAdminLoginFormWithInvalidCredsShouldDisplayError
+        $this->assertQueryContentContains('li.error-msg', 'Invalid Username or Password.');
+    } // submittingInvalidCredsShouldDisplayError
+    
+    /**
+     * submittingValidCredsShouldDisplayDashboard
+     * @author Alistair Stead
+     * @group login
+     * @test
+     */
+    public function submittingValidCredsShouldDisplayDashboard()
+    {
+        $this->login();
+        
+        $this->assertQueryCount('li.error-msg', 1);
+        $this->assertQueryContentContains('li.error-msg', 'Invalid Username or Password.');
+    } // submittingValidCredsShouldDisplayDashboard
+    
+    
+    /**
+     * theForgotPasswordActionShouldDisplayFrom
+     * @author Alistair Stead
+     * @group password
+     * @test
+     */
+    public function theForgotPasswordActionShouldDisplayFrom()
+    {
+        $this->dispatch('admin/index/forgotpassword/');
+        
+        // The forgot password form is the same as the login
+        $this->assertQueryCount('form#loginForm', 1);
+        $this->assertQueryCount('div.forgot-password', 1);
+        $this->assertQueryContentContains('h2', 'Forgot your user name or password?');
+    } // theForgotPasswordActionShouldDisplayFrom
+    
+    /**
+     * submittingForgotPasswordWithInvalidEmailReturnsError
+     * @author Alistair Stead
+     * @group password
+     * @test
+     */
+    public function submittingForgotPasswordWithInvalidEmailReturnsError()
+    {
+        $this->request->setMethod('POST')
+            ->setPost(array('email' => 'invalid'));
+            
+        $this->dispatch('admin/index/forgotpassword/');
+        
+        $this->assertQueryCount('li.error-msg', 1);
+        $this->assertQueryContentContains('li.error-msg', 'Cannot find the email address.');
+    } // submittingForgotPasswordWithInvalidEmailReturnsError
+    
+    /**
+     * submittingForgotPasswordWithValidEmailReturnsSuccess
+     * @author Alistair Stead
+     * @group password
+     * @test
+     * 
+     * @TODO we need some way to mock the email transmission - This
+     * should be handled within Magento to by overwriting Mage_Core_Model_Email.
+     * Need to find a way to inject this object during bootstrap.
+     */
+    public function submittingForgotPasswordWithValidEmailReturnsSuccess()
+    {
+        //owner@example.com - from sample data
+        $this->request->setMethod('POST')
+            ->setPost(array('email' => 'owner@example.com'));
+            
+        $this->dispatch('admin/index/forgotpassword/');
+        
+        $this->assertQueryCount('li.success-msg', 1);
+        $this->assertQueryContentContains('li.success-msg', 'A new password was sent to your email address. Please check your email and click Back to Login.');
+    } // submittingForgotPasswordWithValidEmailReturnsSuccess
     
     
     
