@@ -15,6 +15,7 @@ Then symlink the following module paths to the matching magento path:
     e.g. module path => magento path
     
     Mage_Test/Mage => app/code/local/Mage
+    Mage_Test/Ibuildings/Test => app/code/local/Ibuildings/Test
     lib/Ibuildings => lib/Ibuildings
     
 If you want to take advantage of the core tests created as part of this module within your project. You should also symlink the core tests from within the module:
@@ -26,4 +27,82 @@ Using symlinks means that you can keep your project code separate to this module
 Instead of using manually created symlinks you may wish to consider using [Modman (Module-Manager)](http://code.google.com/p/module-manager/) to manage your module installation / management within your Magento project. This can be used in standalone without any SCM integration.
 
 ## Magento Functional Testing ##
+
+In order to run functional tests within Magento you will need to setup PHPUnit and all the dependencies. You will then need to create a bootstrap.php file that configures the include path ready for running Magento tests.
+
+    <?php
+    // Define path to application directory
+    defined('APPLICATION_PATH')
+        || define('APPLICATION_PATH', realpath(dirname(__FILE__) . '/../app'));
+
+    // Define path to fixtures directory
+    defined('FIXTURES_PATH')
+        || define('FIXTURES_PATH', realpath(dirname(__FILE__) . '/fixtures'));
+
+    // Define path to fixtures directory
+    defined('TEST_LIB')
+        || define('TEST_LIB', realpath(dirname(__FILE__) . '/lib'));
+
+    require_once APPLICATION_PATH.'/Mage.php';
+    
+You will also need to setup your phpunit.xml file and define your test suites. The example below includes the core test suite supplied as part of this module if you have symlinked the files.
+
+    <?xml version="1.0" encoding="UTF-8"?>
+    <phpunit
+        bootstrap="bootstrap.php"
+        stopOnFailure="false"
+        backupGlobals="true"
+        backupStaticAttributes="true"
+        colors="true"
+        convertErrorsToExceptions="true"
+        convertNoticesToExceptions="true"
+        convertWarningsToExceptions="true"
+        processIsolation="true"
+        syntaxCheck="false"
+        verbose="true">
+        <testsuite name="Core Tests">
+            <directory suffix="Test.php">app/code/core</directory>
+        </testsuite>
+    </phpunit>
+    
+You can then create your functional test classes that extend Ibuildings_Mage_Test_PHPUnit_ControllerTestCase.
+
+    /**
+     * submittingForgotPasswordWithInvalidEmailReturnsError
+     * @author Alistair Stead
+     * @group password
+     * @test
+     */
+    public function submittingForgotPasswordWithInvalidEmailReturnsError()
+    {
+        $this->request->setMethod('POST')
+            ->setPost(array('email' => 'invalid'));
+            
+        $this->dispatch('admin/index/forgotpassword/');
+        
+        $this->assertQueryCount('li.error-msg', 1);
+        $this->assertQueryContentContains('li.error-msg', 'Cannot find the email address.');
+    } // submittingForgotPasswordWithInvalidEmailReturnsError
+    
+## Magento Email Functional Testing ##
+
+There are many actions within Magento that will generate transactional emails. In order to test these we need to prevent the email from being sent and capture the Zend_Mail object for making assertions against it. In order to use the standard Zend_Test assertions you can update the response body with the content from the email:
+
+    $this->request->setMethod('POST')
+        ->setPost(array('email' => $this->email));
+        
+    $this->dispatch('admin/index/forgotpassword/');
+    
+    $this->assertQueryCount('li.success-msg', 1);
+    $this->assertQueryContentContains('li.success-msg', 'A new password was sent to your email address. Please check your email and click Back to Login.');
+    // Test that the email contains the correct data
+    $emailContent = $this->getResponseEmail()
+                        ->getBodyHtml()
+                        ->getContent();
+    // Overriding the response body to be able to use the standard content assertions
+    $this->response->setBody($emailContent);
+    // The email content addresses the fixture user
+    $this->assertQueryContentContains('p strong', "Dear, $this->firstName $this->lastName");
+    // The fixture users password has been changed
+    $this->assertNotQueryContentContains('p', $this->password);
 
