@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit
+    bootstrap="bootstrap.php"
+    stopOnFailure="true"
+    backupGlobals="true"
+    backupStaticAttributes="true"
+    colors="true"
+    convertErrorsToExceptions="true"
+    convertNoticesToExceptions="true"
+    convertWarningsToExceptions="true"
+    processIsolation="true"
+    syntaxCheck="true"
+    verbose="true">
+    <testsuite name="Core Tests">
+        <directory suffix="Test.php">app/code/core</directory>
+    </testsuite>
+</phpunit>
