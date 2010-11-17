@@ -35,14 +35,6 @@ In order to run functional tests within Magento you will need to setup PHPUnit a
     defined('APPLICATION_PATH')
         || define('APPLICATION_PATH', realpath(dirname(__FILE__) . '/../app'));
 
-    // Define path to fixtures directory
-    defined('FIXTURES_PATH')
-        || define('FIXTURES_PATH', realpath(dirname(__FILE__) . '/fixtures'));
-
-    // Define path to fixtures directory
-    defined('TEST_LIB')
-        || define('TEST_LIB', realpath(dirname(__FILE__) . '/lib'));
-
     require_once APPLICATION_PATH.'/Mage.php';
     
 You will also need to setup your phpunit.xml file and define your test suites. The example below includes the core test suite supplied as part of this module if you have symlinked the files.
