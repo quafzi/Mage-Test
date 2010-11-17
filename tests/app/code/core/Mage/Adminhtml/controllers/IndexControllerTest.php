@@ -115,20 +115,26 @@ class Mage_Adminhtml_IndexControllerTest extends Mage_Adminhtml_ControllerTestCa
      * @group password
      * @test
      * 
-     * @TODO we need some way to mock the email transmission - This
-     * should be handled within Magento to by overwriting Mage_Core_Model_Email.
-     * Need to find a way to inject this object during bootstrap.
      */
     public function submittingForgotPasswordWithValidEmailReturnsSuccess()
     {
-        //owner@example.com - from sample data
         $this->request->setMethod('POST')
-            ->setPost(array('email' => 'owner@example.com'));
+            ->setPost(array('email' => $this->email));
             
         $this->dispatch('admin/index/forgotpassword/');
         
         $this->assertQueryCount('li.success-msg', 1);
         $this->assertQueryContentContains('li.success-msg', 'A new password was sent to your email address. Please check your email and click Back to Login.');
+        // Test that the email contains the correct data
+        $emailContent = $this->getResponseEmail()
+                            ->getBodyHtml()
+                            ->getContent();
+        // Overriding the response body to be able to use the standard content assertions
+        $this->response->setBody($emailContent);
+        // The email content addresses the fixture user
+        $this->assertQueryContentContains('p strong', "Dear, $this->firstName $this->lastName");
+        // The fixture users password has been changed
+        $this->assertNotQueryContentContains('p', $this->password);
     } // submittingForgotPasswordWithValidEmailReturnsSuccess
     
     

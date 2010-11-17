@@ -188,7 +188,13 @@ class Mage_Core_Model_App
      * @var Zend_Controller_Response_Http
      */
     protected $_response;
-
+    
+    /**
+     * Email object
+     *
+     * @var Zend_Mail
+     */
+    protected $_mail;
 
     /**
      * Events cache
@@ -1168,6 +1174,33 @@ class Mage_Core_Model_App
             $this->_response->setHeader("Content-Type", "text/html; charset=UTF-8");
         }
         return $this->_response;
+    }
+    
+    /**
+     * Set the mail response object
+     * 
+     * @param Zend_Mail $mail
+     *
+     * @return void
+     * @author Alistair Stead
+     **/
+    public function setResponseEmail(Zend_Mail $mail)
+    {
+        $this->_mail = $mail;
+    }
+    
+    /**
+     * Retrieve the response mail object
+     *
+     * @return Zend_Mail
+     * @author Alistair Stead
+     **/
+    public function getResponseEmail()
+    {
+        if (empty($this->_mail)) {
+            $this->_mail = new Zend_Mail();
+        }
+        return $this->_mail;
     }
 
     public function addEventArea($area)

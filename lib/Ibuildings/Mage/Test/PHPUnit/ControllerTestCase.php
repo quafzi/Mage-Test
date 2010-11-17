@@ -40,6 +40,14 @@ abstract class Ibuildings_Mage_Test_PHPUnit_ControllerTestCase
     protected $options = array();
     
     /**
+     * Internal member variable that will hold any email generated
+     * during the request / response with the controller
+     *
+     * @var Zend_Mail
+     **/
+    protected $_mail;
+    
+    /**
      * Overloading: prevent overloading to special properties
      *
      * @param  string $name
@@ -58,7 +66,7 @@ abstract class Ibuildings_Mage_Test_PHPUnit_ControllerTestCase
     /**
      * Overloading for common properties
      *
-     * Provides overloading for request, response, and frontController objects.
+     * Provides overloading for request, response, responseMail and frontController objects.
      *
      * @param mixed $name
      * @return void
@@ -70,6 +78,8 @@ abstract class Ibuildings_Mage_Test_PHPUnit_ControllerTestCase
                 return $this->getRequest();
             case 'response':
                 return $this->getResponse();
+            case 'responseMail':
+                return $this->getResponseMail();
             case 'frontController':
                 return $this->getFrontController();
         }
@@ -87,18 +97,17 @@ abstract class Ibuildings_Mage_Test_PHPUnit_ControllerTestCase
     protected function setUp()
     {
         $this->mageBootstrap();
-        $this->_setUp();
     }
     
     /**
-     * Additional setUp method to anable separation of the test setup methods
+     * Teardown the modifications to the Mage App and Config
      *
      * @return void
      * @author Alistair Stead
      **/
-    protected function _setUp()
+    protected function tearDown()
     {
-        // Add test class setup
+        Mage::getConfig()->reinit();
     }
 
     /**
@@ -117,16 +126,20 @@ abstract class Ibuildings_Mage_Test_PHPUnit_ControllerTestCase
         if (isset($_SERVER['MAGE_IS_DEVELOPER_MODE'])) {
             Mage::setIsDeveloperMode(true);
         }
-        /* Store or website code */
+        // Store or website code
         $this->mageRunCode = isset($_SERVER['MAGE_RUN_CODE']) ? $_SERVER['MAGE_RUN_CODE'] : '';
 
-        /* Run store or run website */
+        // Run store or run website
         $this->mageRunType = isset($_SERVER['MAGE_RUN_TYPE']) ? $_SERVER['MAGE_RUN_TYPE'] : 'store';
         
-        // Initialize the Mage App
+        // Initialize the Mage App and inject the testing request & response
         Mage::app($this->mageRunCode, $this->mageRunType, $this->options);
         Mage::app()->setRequest(new Ibuildings_Mage_Controller_Request_HttpTestCase);
         Mage::app()->setResponse(new Zend_Controller_Response_HttpTestCase);
+        
+        // Rewrite the core classes at runtime to prevent emails from being sent
+        Mage::getConfig()->setNode('global/models/core/rewrite/email_template', 'Ibuildings_Test_Model_Email_Template');
+        Mage::getModel('core/email_template');
     }
 
     /**
@@ -169,6 +182,7 @@ abstract class Ibuildings_Mage_Test_PHPUnit_ControllerTestCase
         $_COOKIE  = array();
         $this->resetRequest();
         $this->resetResponse();
+        $this->resetResponseMail();
         Mage::reset();
     }
 
@@ -210,6 +224,32 @@ abstract class Ibuildings_Mage_Test_PHPUnit_ControllerTestCase
             $this->_response = Mage::app()->getResponse();
         }
         return $this->_response;
+    }
+    
+    /**
+     * Retrieve any emails that would have been sent
+     * by Magento during execution of the request
+     *
+     * @return Zend_Mail
+     * @author Alistair Stead
+     **/
+    public function getResponseEmail()
+    {
+        if (null === $this->_mail) {
+            $this->_mail = Mage::app()->getResponseEmail();
+        }
+        return $this->_mail;
+    }
+    
+    /**
+     * Reset the responseMail generated during the request & response
+     *
+     * @return void
+     * @author Alistair Stead
+     **/
+    public function resetResponseMail()
+    {
+        $this->_mail = null;
     }
     
     /**
