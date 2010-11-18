@@ -4,23 +4,27 @@ This module provides a patched version of Mage_Core enabling you to inject testi
 
 This allows you to build and run functional controller tests in the same way you would with a standard Zend Framework Application using [Zend Test](http://framework.zend.com/manual/en/zend.test.phpunit.html). This mocks the Request and Response objects to that you can query the Response within a suite of tests.
 
+## Requirements ##
+
+* PHPUnit 5.3+
+
 ## Manual Install ##
 
-Clone the module code to your local machine or VM.
+Clone the module code to your local machine or VM somewhere outside your Magento install but accessible with symlinks.
 
     git clone git@github.com:ibuildings/Mage_Test.git
 
-Then symlink the following module paths to the matching magento path:
+Navigate into your Magento base directory and then symlink the following module paths to the matching magento path:
 
-    e.g. module path => magento path
+    mkdir tests
+    ln -s [PATH]/Mage_Test/Mage app/code/local/Mage
+    ln -s [PATH]/Mage_Test/Ibuildings/Test app/code/local/Ibuildings/Test
+    ln -s [PATH]/Mage_Test/lib/Ibuildings lib/Ibuildings
     
-    Mage_Test/Mage => app/code/local/Mage
-    Mage_Test/Ibuildings/Test => app/code/local/Ibuildings/Test
-    lib/Ibuildings => lib/Ibuildings
     
 If you want to take advantage of the core tests created as part of this module within your project. You should also symlink the core tests from within the module:
 
-    tests/app/code/core => tests/app/code/core
+    ln -s [PATH]/Mage_Test/tests/app/code/core tests/app/code/core
     
 Using symlinks means that you can keep your project code separate to this module yet still pull updates to this module from git. This module is still in development and not all assertions have yet been tested.
 
