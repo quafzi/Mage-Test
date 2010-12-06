@@ -29,5 +29,4 @@ class Mage_Catalog_IndexControllerTest extends Ibuildings_Mage_Test_PHPUnit_Cont
                   'This test has not been implemented yet.'
                 );
     } // theIndexActionShouldRedirectToRoot
-    
 }
