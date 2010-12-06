@@ -2,55 +2,105 @@
 
 This module provides a patched version of Mage_Core enabling you to inject testing dependencies at run time. Due to the functionality of the Varien_Autoloader the local code pool is prioritised over the core. Meaning that any code duplicated from the Mage vendor namespace into the local code pool will be used over the core.
 
-## Install ##
+This allows you to build and run functional controller tests in the same way you would with a standard Zend Framework Application using [Zend Test](http://framework.zend.com/manual/en/zend.test.phpunit.html). This mocks the Request and Response objects to that you can query the Response within a suite of tests.
 
-Copy or symlink the following module paths to the matching magento path:
+***Warning - This replaces Mage_Core_Model_App for testing purposes***
 
-    e.g. module path => magento path
+## Requirements ##
+
+* PHPUnit 5.3+
+
+## Manual Install ##
+
+Clone the module code to your local machine or VM somewhere outside your Magento install but accessible with symlinks.
+
+    git clone git@github.com:ibuildings/Mage_Test.git
+
+Navigate into your Magento base directory and then symlink the following module paths to the matching magento path:
     
-    Mage_Test/Mage => app/code/local/Mage
-    lib/PHPUnit => lib/PHPUnit
+    ln -s [PATH]/Mage_Test/Mage app/code/local/Mage
+    ln -s [PATH]/Mage_Test/Ibuildings/Test app/code/local/Ibuildings/Test
+    ln -s [PATH]/Mage_Test/lib/Ibuildings lib/Ibuildings
+    
+    
+If you want to take advantage of the core tests created as part of this module within your project. You should also symlink the core tests from within the module:
+
+    mkdir -p tests/app/code
+    ln -s [PATH]/Mage_Test/tests/app/code/core tests/app/code/core
+    
+Using symlinks means that you can keep your project code separate to this module yet still pull updates to this module from git. This module is still in development and not all assertions have yet been tested.
+
+Instead of using manually created symlinks you may wish to consider using [Modman (Module-Manager)](http://code.google.com/p/module-manager/) to manage your module installation / management within your Magento project. This can be used in standalone without any SCM integration.
 
 ## Magento Functional Testing ##
 
-Magento, although it uses the Zend Framework in places, it does not use the MVC. Magento uses the Varien Controller and associated classes. The Varien_Request & Varien_Response do however extend:
+In order to run functional tests within Magento you will need to setup PHPUnit and all the dependencies. You will then need to create a bootstrap.php file that configures the include path ready for running Magento tests.
 
-* Zend_Controller_Request_Http
-* Zend_Controller_Response_Http
+    <?php
+    // Define path to application directory
+    defined('APPLICATION_PATH')
+        || define('APPLICATION_PATH', realpath(dirname(__FILE__) . '/../app'));
 
-This means that the Zend_Controller_Request_HttpTestCase & Zend_Controller_Response_HttpTestCase should be compatible with Magento
+    require_once APPLICATION_PATH.'/Mage.php';
+    
+You will also need to setup your phpunit.xml file and define your test suites. The example below includes the core test suite supplied as part of this module if you have symlinked the files.
 
-Because Magento uses the Varien MVC it is not possible to use the existing Zend_Test_PHPUnit_ControllerTestCase that are shipped as part of Zend Test. We require a new version of Zend_Test_PHPUnit_ControllerTestCase extended to suite the needs of Magento, PHPUnit_Magento_ControllerTestCase.
+    <?xml version="1.0" encoding="UTF-8"?>
+    <phpunit
+        bootstrap="bootstrap.php"
+        stopOnFailure="false"
+        backupGlobals="true"
+        backupStaticAttributes="true"
+        colors="true"
+        convertErrorsToExceptions="true"
+        convertNoticesToExceptions="true"
+        convertWarningsToExceptions="true"
+        processIsolation="true"
+        syntaxCheck="false"
+        verbose="true">
+        <testsuite name="Core Tests">
+            <directory suffix="Test.php">app/code/core</directory>
+        </testsuite>
+    </phpunit>
+    
+You can then create your functional test classes that extend Ibuildings_Mage_Test_PHPUnit_ControllerTestCase.
 
-We will need to override the setup() method to use a custom bootstrap method to bootstrap the Magento application correctly for it to run within test cases. The bootstrap within Zend_Test_PHPUnit_ControllerTestCase is declared final so we must create a Magento specific version. We will need to create patched versions of some Mage_Core files to allow the runtime injection of:
+    /**
+     * submittingForgotPasswordWithInvalidEmailReturnsError
+     * @author Alistair Stead
+     * @group password
+     * @test
+     */
+    public function submittingForgotPasswordWithInvalidEmailReturnsError()
+    {
+        $this->request->setMethod('POST')
+            ->setPost(array('email' => 'invalid'));
+            
+        $this->dispatch('admin/index/forgotpassword/');
+        
+        $this->assertQueryCount('li.error-msg', 1);
+        $this->assertQueryContentContains('li.error-msg', 'Cannot find the email address.');
+    } // submittingForgotPasswordWithInvalidEmailReturnsError
+    
+## Magento Email Functional Testing ##
 
-* Zend_Controller_Request_HttpTestCase
-* Zend_Controller_Response_HttpTestCase
+There are many actions within Magento that will generate transactional emails. In order to test these we need to prevent the email from being sent and capture the Zend_Mail object for making assertions against it. In order to use the standard Zend_Test assertions you can update the response body with the content from the email:
 
-These classes will possibly need to be overloaded to add the additional functionality required by Magento?
+    $this->request->setMethod('POST')
+        ->setPost(array('email' => $this->email));
+        
+    $this->dispatch('admin/index/forgotpassword/');
+    
+    $this->assertQueryCount('li.success-msg', 1);
+    $this->assertQueryContentContains('li.success-msg', 'A new password was sent to your email address. Please check your email and click Back to Login.');
+    // Test that the email contains the correct data
+    $emailContent = $this->getResponseEmail()
+                        ->getBodyHtml()
+                        ->getContent();
+    // Overriding the response body to be able to use the standard content assertions
+    $this->response->setBody($emailContent);
+    // The email content addresses the fixture user
+    $this->assertQueryContentContains('p strong', "Dear, $this->firstName $this->lastName");
+    // The fixture users password has been changed
+    $this->assertNotQueryContentContains('p', $this->password);
 
-The Magento Controller will also need to be extended to overload the dispatch() method, preventing headers from being sent and allowing the view to be tested.
-
-== Magento Classes to be Overloaded ==
-
-* Mage_Core_Controller_Varien_Front
-* Mage_Core_Controller_Varien_Action
-* Mage_Core_Model_App
-
-== Complex Issues ==
-
-The Mage.php bootstrap class used within Magento that also provides access to all other parts of the application is declared Final. It may be required that an additional testing bootstrap is created that proxies this class. The Mage bootstrap provides access to the application singleton and provides a number of static factory methods that are used throughout the application.
-
-The Mage class will need to be used during testing but we should be able to bootstrap the application and then set the property of the Mage singleton?
-
-None of the classes that require overload are instantiated using the static factory. This means that patches will be required to the core application in order for us to be able to run controller tests. These however can be maintained within the local code pool and loaded based on the ordered priorities of the Varien_Autoloader:
-
-1. local
-2. community
-3. core
-
-= Risks =
-
-* We need to clearly separate modifications from the Magento core so that future upgrades are still possible.
-* Our testing code may be broken as part of an upgrade due to the nature of the modifications.
-* The tests will be using alternate code that may mask an error.
