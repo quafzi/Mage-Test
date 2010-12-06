@@ -23,14 +23,14 @@ abstract class Ibuildings_Mage_Test_PHPUnit_ControllerTestCase
      *
      * @var string
      **/
-    protected $mageRunCode;
+    protected $mageRunCode = '';
     
     /**
      * Internal member variabe that will be used to define if it is a store or the admin that will run
      *
      * @var string
      **/
-    protected $mageRunType;
+    protected $mageRunType = 'store';
     
     /**
      * Internal member variable that will hold the additional options passed to Mage::app()
@@ -122,7 +122,7 @@ abstract class Ibuildings_Mage_Test_PHPUnit_ControllerTestCase
      */
     public function mageBootstrap()
     {
-        $this->reset();
+        Mage::reset();
         if (isset($_SERVER['MAGE_IS_DEVELOPER_MODE'])) {
             Mage::setIsDeveloperMode(true);
         }
@@ -135,10 +135,11 @@ abstract class Ibuildings_Mage_Test_PHPUnit_ControllerTestCase
         // Initialize the Mage App and inject the testing request & response
         Mage::app($this->mageRunCode, $this->mageRunType, $this->options);
         Mage::app()->setRequest(new Ibuildings_Mage_Controller_Request_HttpTestCase);
-        Mage::app()->setResponse(new Zend_Controller_Response_HttpTestCase);
+        Mage::app()->setResponse(new Ibuildings_Mage_Controller_Response_HttpTestCase);
         
         // Rewrite the core classes at runtime to prevent emails from being sent
         Mage::getConfig()->setNode('global/models/core/rewrite/email_template', 'Ibuildings_Test_Model_Email_Template');
+        // This is a hack to get the runtime config changes to take effect
         Mage::getModel('core/email_template');
     }
 
@@ -176,14 +177,24 @@ abstract class Ibuildings_Mage_Test_PHPUnit_ControllerTestCase
      */
     public function reset()
     {
-        $_SESSION = array();
         $_GET     = array();
         $_POST    = array();
-        $_COOKIE  = array();
         $this->resetRequest();
         $this->resetResponse();
         $this->resetResponseMail();
-        Mage::reset();
+        $this->mageBootstrap();
+    }
+    
+    /**
+     * Reset the browser session and cookies
+     *
+     * @return void
+     * @author Alistair Stead
+     **/
+    public function resetSession()
+    {
+        $_SESSION = array();
+        $_COOKIE = array();
     }
 
     /**
@@ -250,6 +261,39 @@ abstract class Ibuildings_Mage_Test_PHPUnit_ControllerTestCase
     public function resetResponseMail()
     {
         $this->_mail = null;
+    }
+    
+    /**
+     * Reset the request object
+     *
+     * Useful for test cases that need to test multiple trips to the server.
+     *
+     * @return Zend_Test_PHPUnit_ControllerTestCase
+     */
+    public function resetRequest()
+    {
+        if ($this->request instanceof Ibuildings_Mage_Controller_Request_HttpTestCase) {
+            $this->request->clearQuery()
+                           ->clearPost();
+        }
+        $this->_request = null;
+        return $this;
+    }
+
+    /**
+     * Reset the response object
+     *
+     * Useful for test cases that need to test multiple trips to the server.
+     *
+     * @return Zend_Test_PHPUnit_ControllerTestCase
+     */
+    public function resetResponse()
+    {
+        // $this->response->clearAllHeaders();
+        // $this->response->clearBody();
+        $this->_resetPlaceholders();
+        $this->_request = null;
+        return $this;
     }
     
     /**
