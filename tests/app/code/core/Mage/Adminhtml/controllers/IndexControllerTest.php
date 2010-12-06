@@ -7,6 +7,9 @@
  * @version    $Id$
  */
  
+ /**
+  * @see Mage_Adminhtml_ControllerTestCase
+  */
 require_once 'ControllerTestCase.php';
 
 /**
@@ -70,9 +73,9 @@ class Mage_Adminhtml_IndexControllerTest extends Mage_Adminhtml_ControllerTestCa
     public function submittingValidCredsShouldDisplayDashboard()
     {
         $this->login();
-        
-        $this->assertQueryCount('li.error-msg', 1);
-        $this->assertQueryContentContains('li.error-msg', 'Invalid Username or Password.');
+
+        $this->assertRedirect('We should be redirected after login');
+        $this->assertRedirectRegex("/^.*dashboard.*$/", 'We are not directed to the dashboard');      
     } // submittingValidCredsShouldDisplayDashboard
     
     
