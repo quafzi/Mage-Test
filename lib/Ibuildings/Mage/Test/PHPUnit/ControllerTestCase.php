@@ -111,7 +111,7 @@ abstract class Ibuildings_Mage_Test_PHPUnit_ControllerTestCase
     }
 
     /**
-     * Boostrap the Mage application in a similar way to the procedure
+     * Bootstrap the Mage application in a similar way to the procedure
      * of index.php
      * 
      * Then sets test case request and response objects in Mage_Core_App,
