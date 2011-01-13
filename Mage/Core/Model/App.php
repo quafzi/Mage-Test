@@ -1150,7 +1150,7 @@ class Mage_Core_Model_App
     }
     
     /**
-     * Privide a public method to allow the protected internal Response object
+     * Provide a public method to allow the protected internal Response object
      * to be set at runtime. This can be used to inject a testing response object
      *
      * @return void
