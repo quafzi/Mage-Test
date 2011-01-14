@@ -30,14 +30,14 @@
  <!-- Generate jdepend.xml and software metrics charts -->
  <target name="pdepend">
   <exec executable="pdepend">
-   <arg line="--jdepend-xml=${basedir}/build/logs/jdepend.xml MageTest" />
+   <arg line="--jdepend-xml=${basedir}/build/logs/jdepend.xml src" />
   </exec>
  </target>
 
  <!-- Generate pmd.xml -->
  <target name="phpmd">
   <exec executable="phpmd">
-   <arg line="MageTool xml codesize,unusedcode
+   <arg line="src xml codesize,unusedcode
               --reportfile ${basedir}/build/logs/pmd.xml" />
   </exec>
  </target>
@@ -45,7 +45,7 @@
  <!-- Generate pmd-cpd.xml -->
  <target name="phpcpd">
   <exec executable="phpcpd">
-   <arg line="--log-pmd ${basedir}/build/logs/pmd-cpd.xml MageTest" />
+   <arg line="--log-pmd ${basedir}/build/logs/pmd-cpd.xml src" />
   </exec>
  </target>
 
@@ -55,14 +55,14 @@
    <arg line="--report=checkstyle
               --report-file=${basedir}/build/logs/checkstyle.xml
               --standard=Zend
-              MageTool" />
+              src" />
   </exec>
  </target>
 
  <!-- Generate API documentation -->
  <target name="phpdoc">
   <exec executable="phpdoc">
-   <arg line="-d MageTool -t build/api" />
+   <arg line="-d src -t build/api" />
   </exec>
  </target>
 

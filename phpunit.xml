@@ -12,7 +12,7 @@
     syntaxCheck="true"
     verbose="true">
     <testsuite name="Mage Test Tests">
-        <directory suffix="Test.php">tests</directory>
+        <directory suffix="Test.php">src/tests</directory>
     </testsuite>
     
     <logging>
