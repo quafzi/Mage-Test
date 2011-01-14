@@ -1,18 +1,21 @@
 <?php
 /**
- * Magento PHPUnit TestCase
+ * Magento PHPUnit ControllerTestCase
  *
- * @package    Ibuildings_Mage_Test_PHPUnit
- * @copyright  Copyright (c) 2010 Ibuildings
- * @author  Alistair Stead
- * @version    $Id$
+ * @package     Ibuildings_Mage_Test_PHPUnit
+ * @copyright   Copyright (c) 2011 Ibuildings. (http://www.ibuildings.com)
+ * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @author      Alistair Stead <alistair@ibuildings.com>
+ * @version     $Id$
  */
 
 /**
- * Functional testing scaffold for Magento applications
+ * PHPUnit_Framework_Magento_TestCase
  *
- *
- * @uses       Zend_Test_PHPUnit_ControllerTestCase
+ * @category    Mage_Test
+ * @package     Ibuildings_Mage_Test_PHPUnit
+ * @subpackage  Ibuildings_Mage_Test_PHPUnit_ControllerTestCase
+ * @uses        Zend_Test_PHPUnit_ControllerTestCase
  */
 abstract class Ibuildings_Mage_Test_PHPUnit_ControllerTestCase
    extends Zend_Test_PHPUnit_ControllerTestCase

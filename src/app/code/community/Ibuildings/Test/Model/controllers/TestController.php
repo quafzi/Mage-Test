@@ -26,7 +26,7 @@ class Ibuildings_Test_Controller extends Mage_Core_Controller_Front_Action
     /**
      * undocumented function
      *
-     * @return void
+     * @return mixed
      * @author Alistair Stead
      **/
     public function __call($name, $args)

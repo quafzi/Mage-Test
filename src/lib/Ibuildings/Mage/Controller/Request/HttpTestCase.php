@@ -1,5 +1,22 @@
 <?php
+/**
+ * Magento Controller Request HttpTestCase
+ *
+ * @package     Ibuildings_Mage_Controller
+ * @copyright   Copyright (c) 2011 Ibuildings. (http://www.ibuildings.com)
+ * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @author      Alistair Stead
+ * @version     $Id$
+ */
 
+/**
+ * Ibuildings_Mage_Controller_Request_HttpTestCase
+ *
+ * @category    Mage_Test
+ * @package     Ibuildings_Mage_Controller
+ * @subpackage  Ibuildings_Mage_Controller_Request
+ * @uses        PHPUnit_Framework_TestCase
+ */
 class Ibuildings_Mage_Controller_Request_HttpTestCase
     extends Zend_Controller_Request_HttpTestCase
 {

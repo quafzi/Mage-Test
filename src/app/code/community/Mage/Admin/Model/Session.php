@@ -10,9 +10,10 @@
  *
  * @category    Mage
  * @package     Mage_Admin
- * @copyright  Copyright (c) 2010 Ibuildings
- * @author  Alistair Stead
- * @version    $Id$
+ * @copyright   Copyright (c) 2011 Ibuildings. (http://www.ibuildings.com)
+ * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @author      Alistair Stead <alistair@ibuildings.com>
+ * @version     $Id$
  */
 
 /**
@@ -22,6 +23,7 @@
  * @category    Mage
  * @package     Mage_Admin
  * @author      Magento Core Team <core@magentocommerce.com>
+ * @author      Alistair Stead <alistair@ibuildings.com>
  */
 class Mage_Admin_Model_Session extends Mage_Core_Model_Session_Abstract
 {
