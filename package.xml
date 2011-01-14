@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<package xmlns="http://pear.php.net/dtd/package-2.0" xmlns:tasks="http://pear.php.net/dtd/tasks-1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" packagerversion="1.9.1" version="2.0" xsi:schemaLocation="http://pear.php.net/dtd/tasks-1.0     http://pear.php.net/dtd/tasks-1.0.xsd     http://pear.php.net/dtd/package-2.0     http://pear.php.net/dtd/package-2.0.xsd">
+    <name>Mage_Test</name>
+    <channel>connect.magentocommerce.com/community</channel>
+    <summary>Patches to the core to allow functional testing with PHPUnit</summary>
+    <description>Patches to Mage_Core_App to allow the injection of testing Request & Response 
+        objects at run time. This allows you to write functional tests with PHPUnit in the same 
+        way as Zend_Test.</description>
+    <lead>
+        <name>Alistair Stead</name>
+        <user>alistairstead</user>
+        <email>astead@ibuildings.com</email>
+        <active>yes</active>
+    </lead>
+    <date>2011-01-01</date>
+    <time>10:03:44</time>
+    <version>
+        <release>0.1.0</release>
+        <api>0.1.0</api>
+    </version>
+    <stability>
+        <release>beta</release>
+        <api>beta</api>
+    </stability>
+    <license>OSL 3.0</license>
+    <contents>
+        <dir name="/">
+        </dir>
+    </contents>
+    <dependencies>
+        <required>
+            <php>
+                <min>5.3.0</min>
+                <max>6.0.0</max>
+            </php>
+            <pearinstaller>
+                <min>1.6.2</min>
+            </pearinstaller>
+        </required>
+    </dependencies>
+</package>
