@@ -8,10 +8,13 @@
     convertErrorsToExceptions="false"
     convertNoticesToExceptions="false"
     convertWarningsToExceptions="false"
-    processIsolation="true"
+    processIsolation="false"
     syntaxCheck="true"
     verbose="true">
     <testsuite name="Mage Test Tests">
+        <directory suffix="Test.php">tests</directory>
+    </testsuite>
+    <testsuite name="Magento Tests">
         <directory suffix="Test.php">src/tests</directory>
     </testsuite>
     

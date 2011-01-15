@@ -34,7 +34,8 @@
     <!-- Generate pmd.xml -->
     <target name="phpmd">
         <exec executable="phpmd">
-            <arg line="src xml codesize,unusedcode               --reportfile ${basedir}/build/logs/pmd.xml"/>
+            <arg line="src xml codesize,unusedcode               
+                --reportfile ${basedir}/build/logs/pmd.xml"/>
         </exec>
     </target>
     <!-- Generate pmd-cpd.xml -->
@@ -46,7 +47,10 @@
     <!-- Generate checkstyle.xml -->
     <target name="phpcs">
         <exec executable="phpcs" output="/dev/null">
-            <arg line="--report=checkstyle               --report-file=${basedir}/build/logs/checkstyle.xml               --standard=Zend               src"/>
+            <arg line="--report=checkstyle               
+                --report-file=${basedir}/build/logs/checkstyle.xml               
+                --standard=Zend               
+                src"/>
         </exec>
     </target>
     <!-- Generate API documentation -->
@@ -58,13 +62,15 @@
     <!-- Generate PHP Code_Browser content -->
     <target name="phpcb">
         <exec executable="phpcb">
-            <arg line="--log    ${basedir}/build/logs               --source ${basedir}/MageTest               --output ${basedir}/build/code-browser"/>
+            <arg line="--log    ${basedir}/build/logs               
+                --source ${basedir}/MageTest               
+                --output ${basedir}/build/code-browser"/>
         </exec>
     </target>
     <!-- Prepare files to build the project package -->
     <target name="prepare">
-        <mkdir dir="${build.dir}"/>
-        <replaceregexp file="${srcdir}/app/code/community/Ibuildings/Test/etc/config.xml" match="(&lt;version&gt;)(.*)(&lt;/version&gt;)" replace="\1${package.version}\3"/>
+        <mkdir dir="build"/>
+        <replaceregexp file="src/app/code/community/Ibuildings/Test/etc/config.xml" match="(&lt;version&gt;)(.*)(&lt;/version&gt;)" replace="\1${package.version}\3"/>
         <tstamp>
             <format property="package.date" pattern="yyyy-MM-dd"/>
         </tstamp>
@@ -81,11 +87,11 @@
         <exec dir="src/" executable="pear">
             <arg value="mpx"/>
         </exec>
-        <copy file="${srcdir}/package.xml" tofile="${basedir}/package.xml"/>
-        <exec dir="${srcdir}" executable="${pear}">
+        <copy file="src/package.xml" tofile="${basedir}/package.xml"/>
+        <exec dir="src" executable="pear">
             <arg value="mage-package"/>
         </exec>
-        <delete file="${srcdir}/package.xml"/>
+        <delete file="src/package.xml"/>
         <move file="src/${ant.project.name}-${package.version}.tgz" todir="build/"/>
     </target>
     <!-- Deploy module files for local testing -->

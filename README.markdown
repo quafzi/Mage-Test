@@ -18,8 +18,8 @@ Clone the module code to your local machine or VM somewhere outside your Magento
 
 Navigate into your Magento base directory and then symlink the following module paths to the matching magento path:
     
-    ln -s [PATH]/Mage_Test/src/Mage app/code/local/Mage
-    ln -s [PATH]/Mage_Test/src/Ibuildings/Test app/code/local/Ibuildings/Test
+    ln -s [PATH]/Mage_Test/src/app/code/community/Mage app/code/community/Mage
+    ln -s [PATH]/Mage_Test/src/app/code/community/Ibuildings/Test app/code/community/Ibuildings/Test
     ln -s [PATH]/Mage_Test/src/lib/Ibuildings lib/Ibuildings
     
     
