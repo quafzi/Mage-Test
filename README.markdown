@@ -18,15 +18,15 @@ Clone the module code to your local machine or VM somewhere outside your Magento
 
 Navigate into your Magento base directory and then symlink the following module paths to the matching magento path:
     
-    ln -s [PATH]/Mage_Test/Mage app/code/local/Mage
-    ln -s [PATH]/Mage_Test/Ibuildings/Test app/code/local/Ibuildings/Test
-    ln -s [PATH]/Mage_Test/lib/Ibuildings lib/Ibuildings
+    ln -s [PATH]/Mage_Test/src/app/code/community/Mage app/code/community/Mage
+    ln -s [PATH]/Mage_Test/src/app/code/community/Ibuildings/Test app/code/community/Ibuildings/Test
+    ln -s [PATH]/Mage_Test/src/lib/Ibuildings lib/Ibuildings
     
     
 If you want to take advantage of the core tests created as part of this module within your project. You should also symlink the core tests from within the module:
 
     mkdir -p tests/app/code
-    ln -s [PATH]/Mage_Test/tests/app/code/core tests/app/code/core
+    ln -s [PATH]/Mage_Test/src/tests/app/code/core tests/app/code/core
     
 Using symlinks means that you can keep your project code separate to this module yet still pull updates to this module from git. This module is still in development and not all assertions have yet been tested.
 

@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+<config>
+    <modules>
+        <Ibuildings_Test>
+            <version>${package.version}</version>
+            <depends>
+                <Mage_Core />
+            </depends>
+        </Ibuildings_Test>
+    </modules>
+</config>
