@@ -89,6 +89,30 @@ abstract class Ibuildings_Mage_Test_PHPUnit_ControllerTestCase
 
         return null;
     }
+    
+    /**
+     * Enable the Magento cache to speed up the testing
+     *
+     * @return void
+     * @author Alistair Stead
+     */
+    public static function setUpBeforeClass()
+    {
+        // Clear any cache to ensure we testing clean config
+        self::cleanCache();
+        // Enable the cache to speed up the tests
+        self::enableCache();
+    }
+
+    /**
+     * Clear the magento cache at the end of each test class
+     *
+     * @return void
+     * @author Alistair Stead
+     */
+    public static function tearDownAfterClass()
+    {
+    }
 
     /**
      * Set up Magento app
@@ -292,10 +316,10 @@ abstract class Ibuildings_Mage_Test_PHPUnit_ControllerTestCase
      */
     public function resetResponse()
     {
-        // $this->response->clearAllHeaders();
-        // $this->response->clearBody();
+        $this->response->clearAllHeaders();
+        $this->response->clearBody();
         $this->_resetPlaceholders();
-        $this->_request = null;
+        $this->_response = null;
         return $this;
     }
     
@@ -338,5 +362,69 @@ abstract class Ibuildings_Mage_Test_PHPUnit_ControllerTestCase
             }
             $this->fail($msg);
         }
+    }
+    
+    /**
+     * Enable the Magento cache
+     *
+     * @return void
+     * @author Alistair Stead
+     **/
+    public static function enableCache()
+    {
+        $allTypes = Mage::app()->useCache();
+        $cacheTypes = array();
+        foreach (Mage::app()->getCacheInstance()->getTypes() as $type) {
+            $cacheTypes[] = $type->getId();
+        }
+
+        $updatedTypes = 0;
+        foreach ($cacheTypes as $code) {
+            if (empty($allTypes[$code])) {
+                $allTypes[$code] = 1;
+                $updatedTypes++;
+            }
+        }
+        if ($updatedTypes > 0) {
+            Mage::app()->saveUseCache($allTypes);
+        }
+    }
+    
+    /**
+     * Disable the Magento cache
+     *
+     * @return void
+     * @author Alistair Stead
+     **/
+    public static function disableCache()
+    {
+        $allTypes = Mage::app()->useCache();
+        $cacheTypes = array();
+        foreach (Mage::app()->getCacheInstance()->getTypes() as $type) {
+            $cacheTypes[] = $type->getId();
+        }
+
+        $updatedTypes = 0;
+        foreach ($cacheTypes as $code) {
+            if (!empty($allTypes[$code])) {
+                $allTypes[$code] = 0;
+                $updatedTypes++;
+            }
+            $tags = Mage::app()->getCacheInstance()->cleanType($code);
+        }
+        if ($updatedTypes > 0) {
+            Mage::app()->saveUseCache($allTypes);
+        }
+    }
+    
+    /**
+     * Clear the Magento cache
+     *
+     * @return void
+     * @author Alistair Stead
+     **/
+    public static function cleanCache()
+    {
+        Mage::app()->getCacheInstance()->clean(array());
     }
 }
