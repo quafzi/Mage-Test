@@ -18,4 +18,36 @@
  */
 class Mage_Cms_Helper_PageTest extends Ibuildings_Mage_Test_PHPUnit_ControllerTestCase {
     
+    /**
+     * Member variable for the Page Helper
+     *
+     * @var Mage_Cms_Helper_Page
+     **/
+    protected $_helper;
+    
+    /**
+     * Setup fictures and dependencies
+     *
+     * @return void
+     * @author Alistair Stead
+     **/
+    public function setUp()
+    {
+        parent::setUp();
+        $this->_helper = Mage::helper('cms/page');
+    }
+    
+    /**
+     * Teardown fictures and dependencies
+     *
+     * @return void
+     * @author Alistair Stead
+     **/
+    public function tearDown()
+    {
+        parent::tearDown();
+        unset(
+            $this->_helper
+        );
+    }
 }
