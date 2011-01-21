@@ -64,7 +64,7 @@ class Mage_Catalog_CategoryControllerTest extends Ibuildings_Mage_Test_PHPUnit_C
             if ($this->_helperCategory->canShow($category) && $category->getIsActive()) {
                 // Construct the URL for the category pre dispatch
                 $url = str_replace(Mage::getBaseUrl(), '', $this->_helperCategory->getCategoryUrl($category));
-                var_dump($url);
+                // Dispatch the testing URL
                 $this->dispatch($url);
                 // Make assertions about the response
                 $this->assertRoute('catalog', "The expected category route has not been matched");

@@ -88,15 +88,12 @@ HDOC;
     {
         $config = Mage::getConfig()->getNode(); 
         $config->extend(new Varien_Simplexml_Element($this->controllerRewrite));
-        //var_dump(Mage::getConfig()->getCache());
-        
-        echo "Before\n";
-        var_dump(Mage::getConfig()->getNode('global/routers/customer/rewrite/account'));
-        $this->dispatch('customer/account/login/');
-        echo "\n\nAfter\n";
-        var_dump(Mage::getConfig()->getNode('global/routers/customer/rewrite/account'));
 
-        // var_dump($this->request);
+        $this->dispatch('customer/account/login/');
+        
+        $this->markTestIncomplete(
+                  'This test has not been implemented yet.'
+                );
     } // controllerRewriteRespectsWhiteSpaceInXMLConfig
     
 }

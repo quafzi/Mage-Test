@@ -50,4 +50,18 @@ class Mage_Cms_Helper_PageTest extends Ibuildings_Mage_Test_PHPUnit_ControllerTe
             $this->_helper
         );
     }
+    
+    /**
+     * getPageUrlShouldReturnString
+     * @author Alistair Stead
+     * @test
+     */
+    public function getPageUrlShouldReturnString()
+    {
+        $this->assertTrue(
+            is_string($this->_helper->getPageUrl()), 
+            "getPageUrl does not return a string value"
+        );
+    } // getPageUrlShouldReturnString
+    
 }

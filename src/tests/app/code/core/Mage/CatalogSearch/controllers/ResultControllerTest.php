@@ -19,17 +19,22 @@
 class Mage_CatalogSearch_ResultControllerTest extends Ibuildings_Mage_Test_PHPUnit_ControllerTestCase {
 
     /**
-     * indexActionShouldRedirectWithEmptyQuery
+     * indexActionShouldDisplayMessageWithEmptyQuery
      * @author Alistair Stead
      * @test
      */
-    public function indexActionShouldRedirectWithEmptyQuery()
+    public function indexActionShouldDisplayMessageWithEmptyQuery()
     {
         $this->request->setMethod('POST')
             ->setPost(array('q' => ''));
             
         $this->dispatch('catalogsearch/result/index');
-        $this->assertResponseCode('302', "The result action deos not redirect with emty query");
-    } // indexActionShouldRedirectWithEmptyQuery
+        
+        var_dump($this->response);
+        
+        $this->assertResponseCode('200', "The response code is not 200");
+        $this->assertContains('Minimum Search query length is 1', $this->response->getBody());
+    } // indexActionShouldDisplayMessageWithEmptyQuery
+    
     
 }

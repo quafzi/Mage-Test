@@ -26,6 +26,9 @@ class Mage_Customer_AccountControllerTest extends Ibuildings_Mage_Test_PHPUnit_C
     public function indexActionIsSecureAndRequiresLogin()
     {
         $this->dispatch('customer/account/index');
+        $this->markTestIncomplete(
+                  'This test has not been implemented yet.'
+                );
     } // indexActionIsSecureAndRequiresLogin
     
     /**
@@ -39,6 +42,9 @@ class Mage_Customer_AccountControllerTest extends Ibuildings_Mage_Test_PHPUnit_C
         $this->_login();
         // Attempt to access the account page
         $this->dispatch('customer/account/index');
+        $this->markTestIncomplete(
+                  'This test has not been implemented yet.'
+                );
     } // indexActionReturnsDashboardToLoggedInUser
     
     

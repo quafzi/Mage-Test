@@ -25,11 +25,13 @@ class Mage_Cms_IndexControllerTest extends Ibuildings_Mage_Test_PHPUnit_Controll
      */
     public function noRouteShouldSet404Header()
     {
-        $this->dispatch('/cms/defaultIndex');
+        $this->dispatch('/cms/defaultNoRoute');
         
         $this->assertRoute('cms', "The expected cms route has not been matched");
         $this->assertController('index', "The expected controller is not been used");
-        $this->assertAction('noRoute', "The login form should be presented");
+        $this->assertAction('defaultNoRoute', "The login form should be presented");
+        
+        var_dump($this->response);
         
         // TODO review the response header functionality and redirects
         // $this->assertResponseCode('404', 'A 404 has not been returned for a non existent page');
