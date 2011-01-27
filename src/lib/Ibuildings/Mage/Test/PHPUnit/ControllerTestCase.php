@@ -89,6 +89,30 @@ abstract class Ibuildings_Mage_Test_PHPUnit_ControllerTestCase
 
         return null;
     }
+    
+    /**
+     * Enable the Magento cache to speed up the testing
+     *
+     * @return void
+     * @author Alistair Stead
+     */
+    public static function setUpBeforeClass()
+    {
+        // Clear any cache to ensure we testing clean config
+        self::cleanCache();
+        // Enable the cache to speed up the tests
+        self::enableCache();
+    }
+
+    /**
+     * Clear the magento cache at the end of each test class
+     *
+     * @return void
+     * @author Alistair Stead
+     */
+    public static function tearDownAfterClass()
+    {
+    }
 
     /**
      * Set up Magento app
@@ -99,6 +123,7 @@ abstract class Ibuildings_Mage_Test_PHPUnit_ControllerTestCase
      */
     protected function setUp()
     {
+        // Boostrap Magento with testing objects
         $this->mageBootstrap();
     }
     
@@ -110,6 +135,9 @@ abstract class Ibuildings_Mage_Test_PHPUnit_ControllerTestCase
      **/
     protected function tearDown()
     {
+        // Reset Sessions and Cookies
+        $this->resetSession();
+        // Re-initialise the Magento config after any dynamic changes during testing
         Mage::getConfig()->reinit();
     }
 
@@ -171,7 +199,14 @@ abstract class Ibuildings_Mage_Test_PHPUnit_ControllerTestCase
     }
 
     /**
-     * Reset Mage state
+     * Reset Application state
+     * 
+     * Reset methos can be used between dispatch requests allowing you to
+     * build user journeys through the application and make assertions
+     * against the reponse at each stage.
+     * 
+     * Dispatch your requests, make assertions and then call reset before the 
+     * next dispatch call.
      *
      * Creates new request/response objects, resets Mage and globals
      * instance, and resets the action helper broker.
@@ -292,10 +327,10 @@ abstract class Ibuildings_Mage_Test_PHPUnit_ControllerTestCase
      */
     public function resetResponse()
     {
-        // $this->response->clearAllHeaders();
-        // $this->response->clearBody();
+        $this->response->clearAllHeaders();
+        $this->response->clearBody();
         $this->_resetPlaceholders();
-        $this->_request = null;
+        $this->_response = null;
         return $this;
     }
     
@@ -341,25 +376,66 @@ abstract class Ibuildings_Mage_Test_PHPUnit_ControllerTestCase
     }
     
     /**
-     * Assert that the last handled request used the given module
+     * Enable the Magento cache
      *
-     * @param  string $module
-     * @param  string $message
      * @return void
-     */
-    public function assertControllerModule($module, $message = '')
+     * @author Alistair Stead
+     **/
+    public static function enableCache()
     {
-        $this->_incrementAssertionCount();
-        if ($module != $this->request->getControllerModule()) {
-            $msg = sprintf('Failed asserting last controller module used <"%s"> was "%s"',
-                $this->request->getControllerModule(),
-                $module
-            );
-            if (!empty($message)) {
-                $msg = $message . "\n" . $msg;
+        $allTypes = Mage::app()->useCache();
+        $cacheTypes = array();
+        foreach (Mage::app()->getCacheInstance()->getTypes() as $type) {
+            $cacheTypes[] = $type->getId();
+        }
+
+        $updatedTypes = 0;
+        foreach ($cacheTypes as $code) {
+            if (empty($allTypes[$code])) {
+                $allTypes[$code] = 1;
+                $updatedTypes++;
             }
-            $this->fail($msg);
+        }
+        if ($updatedTypes > 0) {
+            Mage::app()->saveUseCache($allTypes);
         }
     }
     
+    /**
+     * Disable the Magento cache
+     *
+     * @return void
+     * @author Alistair Stead
+     **/
+    public static function disableCache()
+    {
+        $allTypes = Mage::app()->useCache();
+        $cacheTypes = array();
+        foreach (Mage::app()->getCacheInstance()->getTypes() as $type) {
+            $cacheTypes[] = $type->getId();
+        }
+
+        $updatedTypes = 0;
+        foreach ($cacheTypes as $code) {
+            if (!empty($allTypes[$code])) {
+                $allTypes[$code] = 0;
+                $updatedTypes++;
+            }
+            $tags = Mage::app()->getCacheInstance()->cleanType($code);
+        }
+        if ($updatedTypes > 0) {
+            Mage::app()->saveUseCache($allTypes);
+        }
+    }
+    
+    /**
+     * Clear the Magento cache
+     *
+     * @return void
+     * @author Alistair Stead
+     **/
+    public static function cleanCache()
+    {
+        Mage::app()->getCacheInstance()->clean(array());
+    }
 }

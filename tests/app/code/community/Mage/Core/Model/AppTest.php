@@ -17,6 +17,7 @@ class AppTest extends PHPUnit_Framework_TestCase
      **/
     public function setUp()
     {
+        parent::setUp();
         $this->_app = Mage::app();
     }
     
@@ -28,6 +29,7 @@ class AppTest extends PHPUnit_Framework_TestCase
      **/
     public function tearDown()
     {
+        parent::tearDown();
         unset(
             $this->_app
         );

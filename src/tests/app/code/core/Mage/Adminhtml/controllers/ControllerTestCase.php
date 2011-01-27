@@ -143,31 +143,36 @@ class Mage_Adminhtml_ControllerTestCase extends Ibuildings_Mage_Test_PHPUnit_Con
     protected function createAdminUserFixture()
     {
         //create new user
-        $user = Mage::getModel('admin/user')
-            ->setData(array(
-                'username'  => $this->userName,
-                'firstname' => $this->firstName,
-                'lastname'  => $this->lastName,
-                'email'     => $this->email,
-                'password'  => $this->password,
-                'is_active' => 1
-            ))->save();
+        try {
+            $user = Mage::getModel('admin/user')
+                ->setData(array(
+                    'username'  => $this->userName,
+                    'firstname' => $this->firstName,
+                    'lastname'  => $this->lastName,
+                    'email'     => $this->email,
+                    'password'  => $this->password,
+                    'is_active' => 1
+                ))->save();
 
-        //create new role
-        $role = Mage::getModel("admin/roles")
-                ->setName($this->roleName)
-                ->setRoleType('G')
-                ->save();
+            //create new role
+            $role = Mage::getModel("admin/roles")
+                    ->setName($this->roleName)
+                    ->setRoleType('G')
+                    ->save();
 
-        //give "all" privileges to role
-        Mage::getModel("admin/rules")
-                ->setRoleId($role->getId())
-                ->setResources(array("all"))
-                ->saveRel();
+            //give "all" privileges to role
+            Mage::getModel("admin/rules")
+                    ->setRoleId($role->getId())
+                    ->setResources(array("all"))
+                    ->saveRel();
 
-        $user->setRoleIds(array($role->getId()))
-            ->setRoleUserId($user->getUserId())
-            ->saveRelations();
+            $user->setRoleIds(array($role->getId()))
+                ->setRoleUserId($user->getUserId())
+                ->saveRelations();
+        } catch (Exception $e) {
+            echo "Unable to create fixture :: {$e->getMessage()}";
+        }
+        
     }
 
     /**

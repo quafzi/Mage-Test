@@ -30,7 +30,7 @@ class Mage_Cms_PageControllerTest extends Ibuildings_Mage_Test_PHPUnit_Controlle
         $this->assertRoute('cms', "The expected cms route has not been matched");
         $this->assertAction('index', "The login form should be presented");
         $this->assertController('index', "The expected controller is not been used");
-        $this->assertQueryContains('div.nav-container', 'The site navigation is not present on the home page');
+        $this->assertQuery('div.nav-container', 'The site navigation is not present on the home page');
         
         // TODO We should capture the navigation here to allow us to browse categories and products
         // TODO Store as a member variable that can be used in other tests
