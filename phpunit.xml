@@ -3,7 +3,8 @@
     bootstrap="bootstrap.php"
     stopOnFailure="true"
     colors="true"
-    verbose="true">
+    verbose="true"
+    strict="true">
     <testsuite name="Mage Test Tests">
         <directory suffix="Test.php">tests</directory>
     </testsuite>
