@@ -123,6 +123,7 @@ abstract class Ibuildings_Mage_Test_PHPUnit_ControllerTestCase
      */
     protected function setUp()
     {
+        // Boostrap Magento with testing objects
         $this->mageBootstrap();
     }
     
@@ -134,6 +135,9 @@ abstract class Ibuildings_Mage_Test_PHPUnit_ControllerTestCase
      **/
     protected function tearDown()
     {
+        // Reset Sessions and Cookies
+        $this->resetSession();
+        // Re-initialise the Magento config after any dynamic changes during testing
         Mage::getConfig()->reinit();
     }
 
@@ -195,7 +199,14 @@ abstract class Ibuildings_Mage_Test_PHPUnit_ControllerTestCase
     }
 
     /**
-     * Reset Mage state
+     * Reset Application state
+     * 
+     * Reset methos can be used between dispatch requests allowing you to
+     * build user journeys through the application and make assertions
+     * against the reponse at each stage.
+     * 
+     * Dispatch your requests, make assertions and then call reset before the 
+     * next dispatch call.
      *
      * Creates new request/response objects, resets Mage and globals
      * instance, and resets the action helper broker.
