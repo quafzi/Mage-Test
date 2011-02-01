@@ -1,5 +1,6 @@
 <?xml version="1.0"?>
 <project name="Mage_Test" default="build" basedir=".">
+    <property file="build.default.properties"/>
     <!-- Clean up previous builds -->
     <target name="clean">
         <!-- Clean up -->
@@ -111,6 +112,21 @@
                 <exclude name="**/.svn"/>
             </fileset>
         </copy>
+    </target>
+    <target name="symlink">
+        <symlink overwrite="yes" failonerror="no" link="${deploy.dir}/app/code/community/Mage" resource="${basedir}/src/app/code/community/Mage" />
+        <mkdir dir="${deploy.dir}/app/code/community/Ibuildings"/>
+        <symlink overwrite="yes" failonerror="no" link="${deploy.dir}/app/code/community/Ibuildings/Test" resource="${basedir}/src/app/code/community/Ibuildings/test" />
+        
+        <symlink overwrite="yes" failonerror="no" link="${deploy.dir}/lib/Ibuildings" resource="${basedir}/src/lib/Ibuildings" />
+        <mkdir dir="${deploy.dir}/tests/app/code/"/>
+        <symlink overwrite="yes" failonerror="no" link="${deploy.dir}/tests/app/code/core" resource="${basedir}/src/tests/app/code/core" />
+    </target>
+    <target name="remove">
+        <delete dir="${deploy.dir}/app/code/community/Mage"/>
+        <delete dir="${deploy.dir}/app/code/community/Ibuildings/Test"/>
+        <delete dir="${deploy.dir}/lib/Ibuildings"/>
+        <delete dir="${deploy.dir}/tests/app/code/core"/>
     </target>
     <!-- Default build task -->
     <target name="build" depends="clean,parallelTasks,phpunit,phpcb"/>
