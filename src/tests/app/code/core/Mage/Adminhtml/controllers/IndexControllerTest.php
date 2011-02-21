@@ -136,7 +136,7 @@ class Mage_Adminhtml_IndexControllerTest extends Mage_Adminhtml_ControllerTestCa
         $this->response->setBody($emailContent);
         
         // The email content addresses the fixture user
-        $this->assertQueryContentContains('body', "Dear $this->firstName $this->lastName");
+        $this->assertQueryContentContains('body', $this->lastName);
         // The fixture users password has been changed
         $this->assertNotQueryContentContains('body', $this->password);
     } // submittingForgotPasswordWithValidEmailReturnsSuccess

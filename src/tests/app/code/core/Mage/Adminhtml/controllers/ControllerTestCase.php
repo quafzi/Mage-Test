@@ -72,8 +72,8 @@ class Mage_Adminhtml_ControllerTestCase extends Ibuildings_Mage_Test_PHPUnit_Con
         
         // Build some fuxture values
         $this->userName = 'fixture';
-        $this->firstName = 'Test';
-        $this->lastName = 'User';
+        $this->firstName = 'MageTest';
+        $this->lastName = 'MageUser';
         $this->email = 'test.user@magetest.com';
         $this->password = '123123';
         $this->roleName = 'Fixture';
