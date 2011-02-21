@@ -36,7 +36,7 @@ class Mage_Adminhtml_SalesControllerTest extends Mage_Adminhtml_ControllerTestCa
         $this->reset();
         $this->dispatch('admin/sales_order/index');
         
-        $this->assertQueryContentContains('h3.icon-head', 'Orders');
+        $this->assertQueryContentContains('h3.icon-head', Mage::helper('sales')->__('Orders'));
     } // indexActionListsOrders
     
 }

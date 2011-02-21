@@ -61,7 +61,7 @@ class Mage_Adminhtml_IndexControllerTest extends Mage_Adminhtml_ControllerTestCa
         $this->login('invalid', 'invalid');
         
         $this->assertQueryCount('li.error-msg', 1);
-        $this->assertQueryContentContains('li.error-msg', 'Invalid Username or Password.');
+        $this->assertQueryContentContains('li.error-msg', Mage::helper('core')->__('Invalid Username or Password.'));
     } // submittingInvalidCredsShouldDisplayError
     
     /**
@@ -92,7 +92,7 @@ class Mage_Adminhtml_IndexControllerTest extends Mage_Adminhtml_ControllerTestCa
         // The forgot password form is the same as the login
         $this->assertQueryCount('form#loginForm', 1);
         $this->assertQueryCount('div.forgot-password', 1);
-        $this->assertQueryContentContains('h2', 'Forgot your user name or password?');
+        $this->assertQueryContentContains('h2', Mage::helper('core')->__('Forgot your user name or password?'));
     } // theForgotPasswordActionShouldDisplayFrom
     
     /**
@@ -109,7 +109,7 @@ class Mage_Adminhtml_IndexControllerTest extends Mage_Adminhtml_ControllerTestCa
         $this->dispatch('admin/index/forgotpassword/');
         
         $this->assertQueryCount('li.error-msg', 1);
-        $this->assertQueryContentContains('li.error-msg', 'Cannot find the email address.');
+        $this->assertQueryContentContains('li.error-msg', Mage::helper('core')->__('Cannot find the email address.'));
     } // submittingForgotPasswordWithInvalidEmailReturnsError
     
     /**
@@ -127,7 +127,7 @@ class Mage_Adminhtml_IndexControllerTest extends Mage_Adminhtml_ControllerTestCa
         $this->dispatch('admin/index/forgotpassword/');
         
         $this->assertQueryCount('li.success-msg', 1);
-        $this->assertQueryContentContains('li.success-msg', 'A new password was sent to your email address. Please check your email and click Back to Login.');
+        $this->assertQueryContentContains('li.success-msg', Mage::helper('core')->__('A new password was sent to your email address. Please check your email and click Back to Login.'));
         // Test that the email contains the correct data
         $emailContent = $this->getResponseEmail()
                             ->getBodyHtml()
