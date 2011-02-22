@@ -30,10 +30,8 @@ class Mage_CatalogSearch_ResultControllerTest extends Ibuildings_Mage_Test_PHPUn
             
         $this->dispatch('catalogsearch/result/index');
         
-        var_dump($this->response);
-        
         $this->assertResponseCode('200', "The response code is not 200");
-        $this->assertContains('Minimum Search query length is 1', $this->response->getBody());
+        $this->assertContains(Mage::helper('catalogSearch')->__('Minimum Search query length is %s', Mage::getStoreConfig('catalog/search/min_query_length')), $this->response->getBody());
     } // indexActionShouldDisplayMessageWithEmptyQuery
     
     
