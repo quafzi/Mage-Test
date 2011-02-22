@@ -385,6 +385,29 @@ abstract class Ibuildings_Mage_Test_PHPUnit_ControllerTestCase
     }
     
     /**
+     * Assert that the last handled request used the given module
+     *
+     * @param  string $module
+     * @param  string $message
+     * @return void
+     */
+    public function assertControllerModule($module, $message = '')
+    {
+        $this->_incrementAssertionCount();
+        if ($module != $this->request->getControllerModule()) {
+            $msg = sprintf('Failed asserting last controller module used <"%s"> was "%s"',
+                $this->request->getControllerModule(),
+                $module
+            );
+            if (!empty($message)) {
+                $msg = $message . "\n" . $msg;
+            }
+            $this->fail($msg);
+        }
+    }
+    
+    
+    /**
      * Enable the Magento cache
      *
      * @return void
