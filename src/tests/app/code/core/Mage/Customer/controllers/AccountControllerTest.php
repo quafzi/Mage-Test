@@ -26,9 +26,8 @@ class Mage_Customer_AccountControllerTest extends Ibuildings_Mage_Test_PHPUnit_C
     public function indexActionIsSecureAndRequiresLogin()
     {
         $this->dispatch('customer/account/index');
-        $this->markTestIncomplete(
-                  'This test has not been implemented yet.'
-                );
+        $this->assertRedirect();
+        $this->assertRedirectRegex("~^.*customer/account/login.*$~", 'We are not directed to the login page');       
     } // indexActionIsSecureAndRequiresLogin
     
     /**
