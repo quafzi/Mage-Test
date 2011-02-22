@@ -21,6 +21,8 @@ class Ibuildings_Mage_Controller_Request_HttpTestCase
     extends Zend_Controller_Request_HttpTestCase
 {
 	const XML_NODE_DIRECT_FRONT_NAMES = 'global/request/direct_front_name';
+	
+	const MAGE_TEST_USER_AGENT = 'Mage-Test Mock Browser';
 
     /**
      * ORIGINAL_PATH_INFO
@@ -58,6 +60,19 @@ class Ibuildings_Mage_Controller_Request_HttpTestCase
      * @var array
      */
     protected $_beforeForwardInfo = array();
+    
+    
+    /**
+     * Overload the constructor to set the User_agaent header
+     *
+     * @return void
+     * @author Alistair Stead
+     **/
+    public function __construct()
+    {
+        parent::__construct();
+        $this->setHeader('User-Agent', self::MAGE_TEST_USER_AGENT);
+    }
 
     /**
      * Returns ORIGINAL_PATH_INFO.
