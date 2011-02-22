@@ -51,6 +51,13 @@ abstract class Ibuildings_Mage_Test_PHPUnit_ControllerTestCase
     protected $_mail;
     
     /**
+     * Internal registry of the original values.
+     *
+     * @var array
+     **/
+    protected $_originalConfigValues = array();
+    
+    /**
      * Overloading: prevent overloading to special properties
      *
      * @param  string $name
@@ -137,6 +144,8 @@ abstract class Ibuildings_Mage_Test_PHPUnit_ControllerTestCase
     {
         // Reset Sessions and Cookies
         $this->resetSession();
+        // Reset any database config after tests have been run
+        $this->resetConfig();
         // Re-initialise the Magento config after any dynamic changes during testing
         Mage::getConfig()->reinit();
     }
@@ -460,5 +469,55 @@ abstract class Ibuildings_Mage_Test_PHPUnit_ControllerTestCase
     public static function cleanCache()
     {
         Mage::app()->getCacheInstance()->clean(array());
+    }
+    
+    /**
+     * Set an internal config value for Magento
+     * 
+     * Orginal values will be stores internally and then restored after
+     * all tests have been run with resetConfig().
+     *
+     * @return void
+     * @author Alistair Stead
+     **/
+    public function setConfig($path, $value, $scope = null)
+    {
+        $configCollection = Mage::getModel('core/config_data')->getCollection();
+            
+        $configCollection->addFieldToFilter('path', array("eq" => $path));
+        if (is_string($scope)) {
+            $configCollection->addFieldToFilter('scope', array("eq" => $scope));
+        }
+        $configCollection->load();
+            
+        foreach ($configCollection as $config) {
+            $this->_originalConfigValues[] = $config;
+            $config->setValue($value);
+            $config->save();
+        }
+    }
+    
+    /**
+     * Reset the Magento config to its original values.
+     *
+     * @return void
+     * @author Alistair Stead
+     **/
+    public function resetConfig()
+    {
+        foreach ($this->_originalConfigValues as $originalConfig) {
+            $configCollection = Mage::getModel('core/config_data')->getCollection();
+
+            $configCollection->addFieldToFilter('path', array("eq" => $originalConfig->getPath()));
+            if (is_string($originalConfig->getScope())) {
+                $configCollection->addFieldToFilter('scope', array("eq" => $originalConfig->getScope()));
+            }
+            $configCollection->load();
+
+            foreach ($configCollection as $config) {
+                $config->setValue($originalConfig->getValue());
+                $config->save();
+            }
+        }
     }
 }
