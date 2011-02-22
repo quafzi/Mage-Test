@@ -16,12 +16,11 @@
  *
  * @uses PHPUnit_Framework_Magento_TestCase
  */
-class Mage_Cms_IndexControllerTest extends Ibuildings_Mage_Test_PHPUnit_ControllerTestCase {
-
+class Mage_Cms_IndexControllerTest extends Ibuildings_Mage_Test_PHPUnit_ControllerTestCase
+{
     /**
      * noRouteShouldSet404Header
      * @author Alistair Stead
-     * @test
      */
     public function noRouteShouldSet404Header()
     {
@@ -37,4 +36,18 @@ class Mage_Cms_IndexControllerTest extends Ibuildings_Mage_Test_PHPUnit_Controll
         // $this->assertResponseCode('404', 'A 404 has not been returned for a non existent page');
     } // noRouteShouldSet404Header
     
+    /**
+     * noRouteShouldSet404Header
+     * 
+     * @author Thomas Kappel <thomas.kappel@netresearch.de>
+     * @test
+     */
+    public function noRouteShouldRedirectToHompage()
+    {
+        $this->dispatch('/cms/defaultNoRoute');
+        
+        $this->assertRoute('cms', "The expected cms route has not been matched");
+        $this->assertController('index', "The expected controller is not been used");
+        $this->assertQuery('.cms-index-index');
+    } // noRouteShouldRedirectToHompage
 }
