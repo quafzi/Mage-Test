@@ -166,7 +166,6 @@ class Mage_Checkout_OnepageControllerTest extends Ibuildings_Mage_Test_PHPUnit_C
         $this->assertTrue(array_key_exists($status, $stepData) && $stepData[$status] == '1');
     }
     
-    
     /**
      * set checkout method (login/guest)
      *
@@ -180,10 +179,10 @@ class Mage_Checkout_OnepageControllerTest extends Ibuildings_Mage_Test_PHPUnit_C
             )
         );
         $this->dispatch('checkout/onepage/saveMethod');
-        $json = $this->getResponse()->getBody();
-        if (false !== strpos($json, 'error')) {
-            $this->fail('error while saving checkout method');
-        }
+        $this->assertFalse(
+            strpos($this->getResponse()->getBody(), 'error'),
+            'error while saving checkout method'
+        );
         
         $this->reset();
     }
@@ -211,10 +210,10 @@ class Mage_Checkout_OnepageControllerTest extends Ibuildings_Mage_Test_PHPUnit_C
             )
         );
         $this->dispatch('checkout/onepage/saveBilling');
-        $json = $this->getResponse()->getBody();
-        if (false !== strpos($json, 'error')) {
-            $this->fail('error while saving billing');
-        }
+        $this->assertFalse(
+            strpos($this->getResponse()->getBody(), 'error'),
+            'error while saving billing'
+        );
         $this->assertStepStatus('billing');
         
         $this->reset();
@@ -244,10 +243,10 @@ class Mage_Checkout_OnepageControllerTest extends Ibuildings_Mage_Test_PHPUnit_C
             )
         );
         $this->dispatch('checkout/onepage/saveShipping');
-        $json = $this->getResponse()->getBody();
-        if (false !== strpos($json, 'error')) {
-            $this->fail('error while saving shipping');
-        }
+        $this->assertFalse(
+            strpos($this->getResponse()->getBody(), 'error'),
+            'error while saving shipping'
+        );
         $this->assertStepStatus('shipping');
         
         $this->reset();
@@ -265,10 +264,10 @@ class Mage_Checkout_OnepageControllerTest extends Ibuildings_Mage_Test_PHPUnit_C
                 'shipping_method' => 'freeshipping_freeshipping'
         ));
         $this->dispatch('checkout/onepage/saveShippingMethod');
-        $json = $this->getResponse()->getBody();
-        if (false !== strpos($json, 'error')) {
-            $this->fail('error while saving shipping method');
-        }
+        $this->assertFalse(
+            strpos($this->getResponse()->getBody(), 'error'),
+            'error while saving shipping method'
+        );
         $this->assertStepStatus('shipping_method');
         
         $this->reset();
@@ -287,10 +286,10 @@ class Mage_Checkout_OnepageControllerTest extends Ibuildings_Mage_Test_PHPUnit_C
                     'method' => 'checkmo'
         )));
         $this->dispatch('checkout/onepage/savePayment');
-        $json = $this->getResponse()->getBody();
-        if (false !== strpos($json, 'error')) {
-            $this->fail('error while saving payment');
-        }
+        $this->assertFalse(
+            strpos($this->getResponse()->getBody(), 'error'),
+            'error while saving payment'
+        );
         $this->assertStepStatus('payment');
         
         $this->reset();
@@ -319,11 +318,11 @@ class Mage_Checkout_OnepageControllerTest extends Ibuildings_Mage_Test_PHPUnit_C
                 'agreement' => $agreements
         ));
         $this->dispatch('checkout/onepage/saveOrder');
-        $json = $this->getResponse()->getBody();
-        if ('{"success":true,"error":false}' !== $json) {
-            Mage::getModel('checkout/type_onepage')->getCheckout()->getStepData('review');
-            $this->fail('error while saving order');
-        }
+        $this->assertEquals(
+            '{"success":true,"error":false}',
+            $this->getResponse()->getBody(),
+            'error while saving order'
+        );
         
         $this->reset();
     }
